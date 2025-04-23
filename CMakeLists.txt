@@ -44,7 +44,11 @@ endif()
 find_package(log4cplus 2.1.2)
 cmake_dependent_option(USE_SYSTEM_LOG4CPLUS "Use system log4cplus library" TRUE log4cplus_FOUND FALSE)
 
+# utf8proc
 find_package(utf8proc)
+
+# xxHash
+find_package(xxHash 0.8.2 REQUIRED)
 
 ##### Submodules
 
