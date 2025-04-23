@@ -12,9 +12,6 @@ set(CMAKE_AUTOMOC TRUE)
 set(CMAKE_AUTOUIC TRUE)
 set(CMAKE_AUTORCC TRUE)
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 add_subdirectory(vfs)
 
 if(UNIX AND NOT APPLE)

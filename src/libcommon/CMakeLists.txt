@@ -6,7 +6,6 @@ endif()
 
 find_package(Qt6 REQUIRED COMPONENTS Network Widgets Gui Sql)
 find_package(Poco 1.13.3 REQUIRED Foundation JSON Util)
-find_package(log4cplus 2.1.2 REQUIRED)
 find_package(sentry REQUIRED)
 
 if(UNIX AND CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
@@ -16,9 +15,6 @@ endif()
 find_package(libzip 1.10.1 REQUIRED)
 
 set(CMAKE_AUTOMOC TRUE)
-
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
 
 # Sources
 set(libcommon_SRCS
@@ -68,6 +64,9 @@ endif()
 
 # Target
 add_library(${libcommon_NAME} STATIC ${libcommon_SRCS})
+
+# Without it, build errors occur due to std::wstring and gcc 16
+target_compile_definitions(${libcommon_NAME} PUBLIC UNICODE _UNICODE)
 
 # Precompiled headers
 set(PC_HEADER_FILES
@@ -126,7 +125,7 @@ endif()
 target_link_libraries(${libcommon_NAME}
     Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network Qt6::Sql
     Poco::Foundation Poco::JSON Poco::Util
-    log4cplus::log4cplus
+    log4cplus::log4cplusU
     sentry::sentry
     keychain
     libzip::zip)

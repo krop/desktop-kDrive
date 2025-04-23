@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_CXX_STANDARD 20)
 project(client)
+
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
+
+include(CMakeDependentOption)
+
 if(APPLE)
     enable_language(OBJC)
     enable_language(OBJCXX)
@@ -32,6 +37,12 @@ if(WIN32)
     endforeach()
 endif()
 
+
+##### Build dependencies
+
+# log4cplus
+find_package(log4cplus 2.1.2)
+cmake_dependent_option(USE_SYSTEM_LOG4CPLUS "Use system log4cplus library" TRUE log4cplus_FOUND FALSE)
 
 ##### Submodules
 
@@ -74,8 +85,6 @@ set(INSTALL_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/install")
 set(BUILD_SHARED_LIBS FALSE)
 
 include("${CMAKE_CURRENT_LIST_DIR}/THEME.cmake")
-
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 IF (WIN32)
     SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
@@ -355,62 +364,64 @@ elseif(BUILD_CLIENT)
     endif()
 endif()
 
-if(UNIX AND NOT APPLE)
-    if (DEFINED CONAN_DEP_DIR)
-        # Copy .so files to the conan dependency directory
-        find_package(log4cplus 2.1.2 REQUIRED)
-        find_package(xxHash 0.8.2 REQUIRED)
-        find_package(OpenSSL 3.1.0 REQUIRED SSL Crypto)
-        find_package(Poco 1.13.3 REQUIRED)
-        find_package(sentry REQUIRED)
+if(NOT USE_SYSTEM_LOG4CPLUS)
+    if(UNIX AND NOT APPLE)
+        if (DEFINED CONAN_DEP_DIR)
+            # Copy .so files to the conan dependency directory
+            find_package(log4cplus 2.1.2 REQUIRED)
+            find_package(xxHash 0.8.2 REQUIRED)
+            find_package(OpenSSL 3.1.0 REQUIRED SSL Crypto)
+            find_package(Poco 1.13.3 REQUIRED)
+            find_package(sentry REQUIRED)
 
-        # Normalize Conan variables to be build-type agnostic
-        # Determine the correct path for ConanNormalizeVars.cmake
-        if(DEFINED CMAKE_TOOLCHAIN_FILE AND EXISTS "${CMAKE_TOOLCHAIN_FILE}")
-            get_filename_component(CONAN_GEN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
-        else()
-            set(CONAN_GEN_DIR "${CMAKE_BINARY_DIR}/conan/build/${CMAKE_BUILD_TYPE}/generators")
-        endif()
-        if(EXISTS "${CONAN_GEN_DIR}/ConanNormalizeVars.cmake")
-            set(_CONAN_PACKAGES log4cplus xxhash sentry poco openssl)
-            include("${CONAN_GEN_DIR}/ConanNormalizeVars.cmake")
-        endif()
+            # Normalize Conan variables to be build-type agnostic
+            # Determine the correct path for ConanNormalizeVars.cmake
+            if(DEFINED CMAKE_TOOLCHAIN_FILE AND EXISTS "${CMAKE_TOOLCHAIN_FILE}")
+                get_filename_component(CONAN_GEN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
+            else()
+                set(CONAN_GEN_DIR "${CMAKE_BINARY_DIR}/conan/build/${CMAKE_BUILD_TYPE}/generators")
+            endif()
+            if(EXISTS "${CONAN_GEN_DIR}/ConanNormalizeVars.cmake")
+                set(_CONAN_PACKAGES log4cplus xxhash sentry poco openssl)
+                include("${CONAN_GEN_DIR}/ConanNormalizeVars.cmake")
+            endif()
 
-        # We use <lib>_LIB_DIRS which is normalized by Conan to match the current build type
-        file(COPY
-            # log4cplus
-            "${log4cplus_LIB_DIRS}/liblog4cplus.so"
-            "${log4cplus_LIB_DIRS}/liblog4cplus.so.9"
-            # xxHash
-            "${xxhash_LIB_DIRS}/libxxhash.so"
-            "${xxhash_LIB_DIRS}/libxxhash.so.0"
-            "${xxhash_LIB_DIRS}/libxxhash.so.0.8.2"
-            # OpenSSL
-            "${openssl_LIB_DIRS}/libcrypto.so"
-            "${openssl_LIB_DIRS}/libcrypto.so.3"
-            "${openssl_LIB_DIRS}/libssl.so"
-            "${openssl_LIB_DIRS}/libssl.so.3"
-            # sentry
-            "${sentry_LIB_DIRS}/libsentry.so"
-            # Poco
-            "${poco_LIB_DIRS}/libPocoCrypto.so"
-            "${poco_LIB_DIRS}/libPocoCrypto.so.103"
-            "${poco_LIB_DIRS}/libPocoFoundation.so"
-            "${poco_LIB_DIRS}/libPocoFoundation.so.103"
-            "${poco_LIB_DIRS}/libPocoJSON.so"
-            "${poco_LIB_DIRS}/libPocoJSON.so.103"
-            "${poco_LIB_DIRS}/libPocoNet.so"
-            "${poco_LIB_DIRS}/libPocoNet.so.103"
-            "${poco_LIB_DIRS}/libPocoNetSSL.so"
-            "${poco_LIB_DIRS}/libPocoNetSSL.so.103"
-            "${poco_LIB_DIRS}/libPocoUtil.so"
-            "${poco_LIB_DIRS}/libPocoUtil.so.103"
-            "${poco_LIB_DIRS}/libPocoXML.so"
-            "${poco_LIB_DIRS}/libPocoXML.so.103"
-            DESTINATION "${CONAN_DEP_DIR}"
-            FILE_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-        )
-        message(STATUS "Copied libraries to ${CONAN_DEP_DIR}")
+            # We use <lib>_LIB_DIRS which is normalized by Conan to match the current build type
+            file(COPY
+                # log4cplus
+                "${log4cplus_LIB_DIRS}/liblog4cplus.so"
+                "${log4cplus_LIB_DIRS}/liblog4cplus.so.9"
+                # xxHash
+                "${xxhash_LIB_DIRS}/libxxhash.so"
+                "${xxhash_LIB_DIRS}/libxxhash.so.0"
+                "${xxhash_LIB_DIRS}/libxxhash.so.0.8.2"
+                # OpenSSL
+                "${openssl_LIB_DIRS}/libcrypto.so"
+                "${openssl_LIB_DIRS}/libcrypto.so.3"
+                "${openssl_LIB_DIRS}/libssl.so"
+                "${openssl_LIB_DIRS}/libssl.so.3"
+                # sentry
+                "${sentry_LIB_DIRS}/libsentry.so"
+                # Poco
+                "${poco_LIB_DIRS}/libPocoCrypto.so"
+                "${poco_LIB_DIRS}/libPocoCrypto.so.103"
+                "${poco_LIB_DIRS}/libPocoFoundation.so"
+                "${poco_LIB_DIRS}/libPocoFoundation.so.103"
+                "${poco_LIB_DIRS}/libPocoJSON.so"
+                "${poco_LIB_DIRS}/libPocoJSON.so.103"
+                "${poco_LIB_DIRS}/libPocoNet.so"
+                "${poco_LIB_DIRS}/libPocoNet.so.103"
+                "${poco_LIB_DIRS}/libPocoNetSSL.so"
+                "${poco_LIB_DIRS}/libPocoNetSSL.so.103"
+                "${poco_LIB_DIRS}/libPocoUtil.so"
+                "${poco_LIB_DIRS}/libPocoUtil.so.103"
+                "${poco_LIB_DIRS}/libPocoXML.so"
+                "${poco_LIB_DIRS}/libPocoXML.so.103"
+                DESTINATION "${CONAN_DEP_DIR}"
+                FILE_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+            )
+            message(STATUS "Copied libraries to ${CONAN_DEP_DIR}")
+        endif()
     endif()
 endif()
 

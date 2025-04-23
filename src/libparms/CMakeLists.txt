@@ -6,9 +6,6 @@ endif()
 
 find_package(Poco 1.13.3 REQUIRED Foundation)
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 # Sources
 set(parms_SRCS
     db/parmsdb.h db/parmsdb.cpp

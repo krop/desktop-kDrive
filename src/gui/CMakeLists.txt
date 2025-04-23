@@ -8,9 +8,6 @@ find_package(Qt6 REQUIRED COMPONENTS Network Sql Widgets SvgWidgets)
 find_package(Qt6LinguistTools)
 find_package(Poco 1.13.3 REQUIRED Foundation Net)
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 if(Qt6LinguistTools_FOUND)
     qt6_add_translation(client_I18N ${TRANSLATIONS})
 endif()

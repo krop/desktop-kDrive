@@ -7,9 +7,6 @@ endif()
 find_package(Poco 1.13.3 REQUIRED Foundation Net NetSSL JSON Util)
 find_package(OpenSSL 3.1.0 REQUIRED SSL Crypto)
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 # Sources
 set(syncengine_SRCS
     # Database

@@ -45,13 +45,12 @@ target_link_libraries(kDriveRecoveryUpdater PRIVATE
     Qt6::Core
     Qt6::Widgets
     Qt6::Network
-        ${libparms_NAME}
-
-
-        Poco::Foundation
+    ${libparms_NAME}
+    Poco::Foundation
     Poco::Net
     Poco::NetSSL
     Poco::JSON
+    log4cplus::log4cplusU
 )
 
 target_include_directories(kDriveRecoveryUpdater PRIVATE

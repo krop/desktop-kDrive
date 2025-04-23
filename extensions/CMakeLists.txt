@@ -1,6 +1,3 @@
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 if(APPLE)
   add_subdirectory(MacOSX)
 endif()
