@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_CXX_STANDARD 20)
 project(client)
@@ -125,6 +125,14 @@ include_directories(
 
 include(GNUInstallDirs)
 include(GenerateExportHeader)
+
+if(NOT DEFINED SYSCONFDIR)
+    if(UNIX)
+        set(SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}")
+    endif()
+else()
+    cmake_path(ABSOLUTE_PATH SYSCONFDIR BASE_DIRECTORY "${CMAKE_INSTALL_PREFIX}" OUTPUT_VARIABLE SYSCONFDIR)
+endif()
 
 add_definitions(
         -DQT_USE_QSTRINGBUILDER
