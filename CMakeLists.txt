@@ -44,12 +44,16 @@ endif()
 find_package(log4cplus 2.1.2)
 cmake_dependent_option(USE_SYSTEM_LOG4CPLUS "Use system log4cplus library" TRUE log4cplus_FOUND FALSE)
 
+find_package(utf8proc)
+
 ##### Submodules
 
 # utf8proc
 if(UNIX)
-    set(UTF8PROC_INSTALL OFF CACHE BOOL "Disable installation of utf8proc" FORCE) # Disable installation of the libutf8proc.a static library
-    add_subdirectory(src/3rdparty/utf8proc)
+    if(NOT utf8proc_FOUND)
+        set(UTF8PROC_INSTALL OFF CACHE BOOL "Disable installation of utf8proc" FORCE) # Disable installation of the libutf8proc.a static library
+        add_subdirectory(src/3rdparty/utf8proc)
+    endif()
 endif()
 
 # keychain
