@@ -21,6 +21,8 @@
 #include "config.h"
 #include "io/iohelper.h"
 
+#include "log/log.h"
+
 #include "utility/utility_base.h"
 
 #include "libcommon/utility/utility.h"
@@ -359,9 +361,11 @@ SyncPath Utility::getExcludedAppFilePath(const bool test /*= false*/) {
 
 SyncPath Utility::getExcludedTemplateFilePath(const bool test /*= false*/) {
     if (test) return excludedTemplateFileName;
-    auto canonicalPath = std::filesystem::weakly_canonical(CommonUtility::getAppWorkingDir() / SyncPath{resourcesPath} /
-                                                           excludedTemplateFileName);
-    return canonicalPath.make_preferred();
+    std::filesystem::path templateFilePath = (SYSCONFDIR "/" APPLICATION_NAME "/sync-exclude.lst");
+
+    LOG_INFO(Log::instance()->getLogger(), "sync-exclude.lst path: " << templateFilePath.c_str());
+
+    return templateFilePath;
 }
 
 SyncPath Utility::binRelativePath() {
