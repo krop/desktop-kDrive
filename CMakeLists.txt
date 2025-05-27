@@ -205,6 +205,16 @@ option(BUILD_GUI_LEGACY "BUILD_GUI_LEGACY" OFF)
 # build the tests
 option(BUILD_UNIT_TESTS "BUILD_UNIT_TESTS" OFF)
 
+if(UNIX AND BUILD_GUI)
+    option(INSTALL_SYSTEMD_USER_UNIT "Install systemd user unit file" OFF)
+endif()
+
+if(INSTALL_SYSTEMD_USER_UNIT)
+    set(SYSTEMD_USER_UNIT_DIR "lib/systemd/user")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/infomaniak-kdrive.service.in ${CMAKE_CURRENT_BINARY_DIR}/infomaniak-kdrive.service @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/infomaniak-kdrive.service DESTINATION ${SYSTEMD_USER_UNIT_DIR})
+endif()
+
 if(APPLE)
     # build uninstaller
     option(BUILD_UNINSTALLER "BUILD_UNINSTALLER" ON)
