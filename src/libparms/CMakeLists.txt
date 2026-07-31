@@ -56,4 +56,5 @@ endif()
 # Link
 target_link_libraries(${libparms_NAME}
     ${libcommonserver_NAME}
-    Poco::Foundation)
+    Poco::Foundation
+    SQLite3::SQLite3)

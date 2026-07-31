@@ -5,7 +5,6 @@ else()
 endif()
 
 find_package(Poco 1.13.3 REQUIRED Foundation)
-find_package(SQLite3 3.53.0 REQUIRED)
 
 set(testparms_NAME ${APPLICATION_NAME}_test_parms)
 
@@ -40,7 +39,7 @@ set_target_properties(${testparms_NAME} PROPERTIES
 
 target_link_libraries(${testparms_NAME}
         ${libparms_NAME}
-        SQLite::SQLite3
+        SQLite3::SQLite3
 )
 
 if(WIN32)

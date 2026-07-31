@@ -50,6 +50,9 @@ find_package(utf8proc)
 # xxHash
 find_package(xxHash 0.8.2 REQUIRED)
 
+# SQlite3
+find_package(SQLite3 3.8.0 REQUIRED)
+
 ##### Submodules
 
 # utf8proc
