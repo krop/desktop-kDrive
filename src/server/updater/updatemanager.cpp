@@ -38,7 +38,7 @@ UpdateManager::UpdateManager(QObject *parent) :
 
     (void) connect(&_updateCheckTimer, &QTimer::timeout, this, &UpdateManager::slotTimerFired);
 
-    static constexpr auto checkInterval = std::chrono::hours(1);
+    static constexpr auto checkInterval = std::chrono::hours(24);
     _updateCheckTimer.start(std::chrono::milliseconds(checkInterval).count());
 
     // Setup callback for update state change notification
@@ -96,7 +96,7 @@ void UpdateManager::slotUpdateStateChanged(const UpdateState newState) {
         }
         case UpdateState::Ready: {
             if (AbstractUpdater::isVersionSkipped(_updater->versionInfo().fullVersion())) break;
-                // The new version is ready to be installed
+            // The new version is ready to be installed
 #if defined(KD_WINDOWS)
             emit showUpdateDialog();
 #endif
