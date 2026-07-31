@@ -6,6 +6,7 @@ project(client)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 include(CMakeDependentOption)
+include(FeatureSummary)
 
 if(APPLE)
     enable_language(OBJC)
@@ -438,3 +439,6 @@ endif()
 
 message("prefix: ${CMAKE_FIND_LIBRARY_PREFIXES}")
 message("suffix: ${CMAKE_FIND_LIBRARY_SUFFIXES}")
+
+# Print build dependencies that were found
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
