@@ -1,0 +1,18 @@
+This repository is a fork of Infomaniak's kDrive one with changes for Linux distributions:
+
+- Allow using system log4cplus
+- Allow using system utf8proc
+- Allow using system xxHash
+- Allow using system SQLite3
+- Use a SYSCONFDIR variable for the default exclusion list (to be FHS compliant)
+- Install an optional systemd user file
+- Fix a crashpad related variable
+
+As an example, a package for openSUSE is available here: https://build.opensuse.org/package/show/home:krop/kdrive
+It contains post-install fixes fixes (https://build.opensuse.org/projects/home:krop/packages/kdrive/files/kdrive.spec?expand=1):
+- to remove unneeded static libkeychain and headers
+- to delete an unneeded crashpad_handler copy
+
+TODO:
+- Extend of disable the version update check.
+Currently, the kdrive application looks for update every hour which is excessive.
